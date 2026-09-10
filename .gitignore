@@ -8,6 +8,9 @@ node_modules/
 # Runtime data files (not for public repo)
 inbound_submissions.json
 
+# Vercel build output
+.vercel/
+
 # OS files
 .DS_Store
 Thumbs.db
