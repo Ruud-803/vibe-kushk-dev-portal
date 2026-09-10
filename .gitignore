@@ -1,0 +1,16 @@
+# Node dependencies
+node_modules/
+
+# Environment files
+.env
+.env.local
+
+# Runtime data files (not for public repo)
+inbound_submissions.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
