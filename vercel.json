@@ -1,8 +1,10 @@
 {
+  "version": 2,
+  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/api/partner-submit",
-      "destination": "/api/partner-submit"
+      "destination": "/api/partner-submit.js"
     }
   ]
 }
