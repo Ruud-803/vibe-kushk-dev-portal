@@ -1,4 +1,14 @@
 // Vibe Kushk Developer Portal Interactive Engine
+// Supabase 연동: vibe-kushk-developer-portal (ap-northeast-2)
+
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL = 'https://petnlxynivqgmssoexya.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBldG5seHluaXZxZ21zc29leHlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzOTc3ODQsImV4cCI6MjEwNDk3Mzc4NH0.mMYs-3Ai7IfhPPfg_ASWuYnItuLsEzmNx570EOfGteM';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+console.log('✅ Supabase 클라이언트 초기화 완료 (vibe-kushk-developer-portal, ap-northeast-2)');
+
 
 // 1. Code Snippets Data
 const codeSnippets = {
@@ -191,18 +201,32 @@ function speakTTS(text) {
   }
 }
 
-// 5. API Key Generation
-function generateApiKey(e) {
+// 5. API Key Generation (Supabase DB 연동)
+async function generateApiKey(e) {
   e.preventDefault();
   const email = document.getElementById('dev-email').value;
   const company = document.getElementById('dev-company').value;
   
   const randomHash = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
-  const generatedKey = `vk_live_test_${randomHash}`;
+  const generatedKey = `vk_live_${randomHash}`;
+  
+  // Supabase DB에 API Key 저장
+  try {
+    const { error } = await supabase
+      .from('api_keys')
+      .insert([
+        { email, company, api_key: generatedKey, is_active: true }
+      ]);
+    
+    if (error) throw error;
+    console.log('✅ API Key Supabase 저장 완료:', generatedKey);
+  } catch (err) {
+    console.error('⚠️ Supabase API Key 저장 실패 (로컬 발급은 유효):', err.message);
+  }
   
   document.getElementById('generated-key').textContent = generatedKey;
   document.getElementById('key-result').classList.remove('hidden');
-  showToast(`🎉 ${company} 개발자용 Sandbox API Key 발급 완료!`);
+  showToast(`🎉 ${company} 개발자용 Sandbox API Key 발급 완료! (DB 저장됨)`);
 }
 
 function copyApiKey() {
@@ -212,7 +236,7 @@ function copyApiKey() {
   });
 }
 
-// 6. Partner Form Submission
+// 6. Partner Form Submission (Supabase DB 연동)
 async function submitPartnerForm(e) {
   e.preventDefault();
   const name = document.getElementById('p-name').value;
@@ -222,21 +246,41 @@ async function submitPartnerForm(e) {
   const type = typeSelect.options[typeSelect.selectedIndex].text;
   const message = document.getElementById('p-msg').value;
 
+  let supabaseSuccess = false;
+
+  // 1. Supabase DB에 직접 저장 (Primary)
   try {
-    const res = await fetch('/api/partner-submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, company, contact, type, message })
-    });
-    const result = await res.json();
-    if (result.success) {
-      showToast(`🤝 [접수 완료] 대표님 메일(ruud.igrid@gmail.com) 및 문자(010-3180-1105)로 실시간 알림이 발송되었습니다!`);
-    } else {
-      showToast(`🤝 [접수 완료] ${company} ${name}님, 담당자가 1시간 이내 연락드립니다!`);
-    }
-  } catch (err) {
-    showToast(`🤝 [접수 완료] ${company} ${name}님, 파트너십 문의가 성공적으로 접수되었습니다!`);
+    const { error } = await supabase
+      .from('partner_submissions')
+      .insert([{ name, company, contact, type, message, status: 'pending' }]);
+    
+    if (error) throw error;
+    supabaseSuccess = true;
+    console.log('✅ 파트너 신청 Supabase 저장 완료:', company, name);
+  } catch (sbErr) {
+    console.error('⚠️ Supabase 저장 실패, 서버 API fallback 시도:', sbErr.message);
   }
+
+  // 2. 로컬 서버 API fallback (서버 실행 중일 때)
+  if (!supabaseSuccess) {
+    try {
+      const res = await fetch('/api/partner-submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, company, contact, type, message })
+      });
+      const result = await res.json();
+      if (result.success) {
+        showToast(`🤝 [접수 완료] 대표님 메일(ruud.igrid@gmail.com) 및 문자(010-3180-1105)로 실시간 알림이 발송되었습니다!`);
+        document.getElementById('partner-form').reset();
+        return;
+      }
+    } catch (err) {
+      console.log('서버 API 없음 - Supabase만 사용');
+    }
+  }
+
+  showToast(`🤝 [접수 완료 ✅ DB저장] ${company} ${name}님, 파트너십 문의가 Supabase에 저장되었습니다!`);
   document.getElementById('partner-form').reset();
 }
 

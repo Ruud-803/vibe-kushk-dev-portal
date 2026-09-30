@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>배리어프리 키오스크 법안 대응 교체 비용 비교 견적서 & 계산기 | Vibe Kushk</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --accent-red: #ef4444;
+      --accent-green: #10b981;
+      --accent-blue: #3b82f6;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --border-color: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    /* Warning Banner */
+    .warning-banner {
+      background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+      border: 2px solid var(--accent-red);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 10px 25px rgba(239, 68, 68, 0.25);
+      animation: pulse 2s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+      100% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.7); }
+    }
+
+    .warning-icon {
+      font-size: 2.5rem;
+    }
+
+    .warning-text h3 {
+      color: #fca5a5;
+      font-size: 1.15rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .warning-text p {
+      color: #fee2e2;
+      font-size: 0.95rem;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 0.8rem;
+      background: linear-gradient(to right, #ffffff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      color: var(--text-sub);
+      font-size: 1.1rem;
+    }
+
+    /* Interactive Calculator Card */
+    .calculator-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .calc-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #60a5fa;
+    }
+
+    .input-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.5rem;
+      background: #0f172a;
+      padding: 1.25rem 1.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 2rem;
+    }
+
+    .input-label {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .input-control {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .input-number {
+      background: #1e293b;
+      border: 2px solid var(--accent-blue);
+      color: #ffffff;
+      font-size: 1.5rem;
+      font-weight: 800;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      width: 110px;
+      text-align: center;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .input-number:focus {
+      border-color: #60a5fa;
+      box-shadow: 0 0 12px rgba(96, 165, 250, 0.5);
+    }
+
+    .slider {
+      flex: 1;
+      min-width: 200px;
+      accent-color: var(--accent-blue);
+      height: 8px;
+      cursor: pointer;
+    }
+
+    /* Comparison Display Grid */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .compare-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .compare-box {
+      border-radius: 14px;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .compare-box.old-way {
+      background: linear-gradient(180deg, rgba(239, 68, 68, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+      border: 2px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .compare-box.new-way {
+      background: linear-gradient(180deg, rgba(16, 185, 129, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+      border: 2px solid var(--accent-green);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      width: fit-content;
+    }
+
+    .old-way .badge {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--accent-red);
+      border: 1px solid var(--accent-red);
+    }
+
+    .new-way .badge {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--accent-green);
+      border: 1px solid var(--accent-green);
+    }
+
+    .box-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .big-cost {
+      font-size: 2.3rem;
+      font-weight: 900;
+      margin: 1rem 0;
+      letter-spacing: -0.5px;
+    }
+
+    .old-way .big-cost {
+      color: var(--accent-red);
+    }
+
+    .new-way .big-cost {
+      color: var(--accent-green);
+    }
+
+    .cost-detail-list {
+      list-style: none;
+      margin-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 1rem;
+    }
+
+    .cost-detail-list li {
+      font-size: 0.95rem;
+      color: var(--text-sub);
+      margin-bottom: 0.6rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .cost-detail-list li span.val {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Official Quotation Table Section */
+    .table-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .table-header h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .quote-no {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      background: #0f172a;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      max-height: 350px;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background: #0f172a;
+      color: var(--text-sub);
+      font-size: 0.9rem;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+    }
+
+    td {
+      font-size: 0.95rem;
+    }
+
+    .highlight-red {
+      color: var(--accent-red);
+      font-weight: 700;
+    }
+
+    .highlight-green {
+      color: var(--accent-green);
+      font-weight: 700;
+    }
+
+    .savings-banner {
+      margin-top: 1.5rem;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--accent-green);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #6ee7b7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Warning Banner -->
+    <div class="warning-banner">
+      <div class="warning-icon">🚨</div>
+      <div class="warning-text">
+        <h3>장애인차별금지법 개정안 시행 (배리어프리 키오스크 의무화)</h3>
+        <p>미이행 시 법적 과태료 <strong>최대 3,000만원</strong> 및 과징금 부과 대상입니다.</p>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+      <h1>키오스크 교체 견적 vs Vibe Kushk SDK 시뮬레이터</h1>
+      <p>하드웨어 전면 교체 비용과 소프트웨어 SDK 연동 비용을 실시간으로 비교해보세요.</p>
+    </header>
+
+    <!-- Calculator Card -->
+    <div class="calculator-card">
+      <div class="calc-title">
+        🧮 보유 키오스크 대수 입력 시뮬레이션
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="kiosk-count">운영 중인 키오스크 수량:</label>
+        <div class="input-control">
+          <input type="number" id="kiosk-count" class="input-number" value="10" min="1" max="500">
+          <span style="font-size: 1.1rem; font-weight: 700;">대</span>
+        </div>
+        <input type="range" id="kiosk-slider" class="slider" value="10" min="1" max="100">
+      </div>
+
+      <div class="compare-grid">
+        <!-- Old HW Replacement -->
+        <div class="compare-box old-way">
+          <div>
+            <span class="badge">기존 하드웨어 전면 교체 방식</span>
+            <div class="box-title">신규 배리어프리 키오스크 구매</div>
+          </div>
+          <div>
+            <div class="big-cost" id="hw-total-cost">50,000,000 원</div>
+            <ul class="cost-detail-list">
+              <li><span>HW 신규 기기값 (1대당 450만원)</span> <span class="val" id="hw-base-cost">45,000,000 원</span></li>
+              <li><span>배송/설치 및 공사비</span> <span class="val" id="hw-install-cost">5,000,000 원</span></li>
+              <li><span>소요 시간 및 영업 손실</span> <span class="val highlight-red">약 3개월 소요 (영업 중단)</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- New Vibe Kushk SDK -->
+        <div class="compare-box new-way">
+          <div>
+            <span class="badge">Vibe Kushk AI Voice SDK 방식</span>
+            <div class="box-title">기존 키오스크에 스크립트 3줄 추가</div>
+          </div>
+          <div>
+            <div class="big-cost" id="sdk-total-cost">290,000 원 /월</div>
+            <ul class="cost-detail-list">
+              <li><span>HW 추가 구매비</span> <span class="val highlight-green">0 원 (기존 기기 그대로 사용)</span></li>
+              <li><span>SDK 구독료 (1대당 월 2.9만원)</span> <span class="val" id="sdk-sub-cost">290,000 원 /월</span></li>
+              <li><span>연동 소요 시간</span> <span class="val highlight-green">단 10분 완료 (영업 차질 0%)</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="savings-banner" id="savings-banner">
+        🎉 Vibe Kushk 도입 시 즉시 약 49,710,000 원 (99.4%) 예산 절감!
+      </div>
+    </div>
+
+    <!-- Quotation Table -->
+    <div class="table-section">
+      <div class="table-header">
+        <h3>📑 항목별 세부 견적 비교 내역서</h3>
+        <div class="quote-no">견적번호: VK-2026-0924</div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>비교 항목</th>
+              <th>기존 하드웨어 전면 교체</th>
+              <th>Vibe Kushk SDK 연동</th>
+              <th>비고 / 차이점</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>키오스크 1대당 단가</strong></td>
+              <td class="highlight-red">4,500,000 원</td>
+              <td class="highlight-green">0 원</td>
+              <td>신규 기기 도입 불필요</td>
+            </tr>
+            <tr>
+              <td><strong>소프트웨어 연동 비용</strong></td>
+              <td>0 원</td>
+              <td class="highlight-green">월 29,000 원 / 대</td>
+              <td>월 구독형 B2B API</td>
+            </tr>
+            <tr>
+              <td><strong>설치 및 철거 공사비</strong></td>
+              <td class="highlight-red">5,000,000 원 (10대 기준)</td>
+              <td class="highlight-green">0 원</td>
+              <td>기존 하드웨어 재활용</td>
+            </tr>
+            <tr>
+              <td><strong>음성 인식 (STT/TTS) 연동</strong></td>
+              <td>별도 모듈 추가 구매 필요</td>
+              <td class="highlight-green">기본 탑재 (AI Voice Engine)</td>
+              <td>높은 음성 인식률 보장</td>
+            </tr>
+            <tr>
+              <td><strong>휠체어 / 저자세 UI 모드</strong></td>
+              <td>기계식 모터 높납조절장치 필요</td>
+              <td class="highlight-green">소프트웨어 화면 하단 슬라이딩</td>
+              <td>KS X 9211 규격 완벽 준수</td>
+            </tr>
+            <tr>
+              <td><strong>총 초기 도입 비용 (10대)</strong></td>
+              <td class="highlight-red" style="font-size: 1.1rem;">50,000,000 원</td>
+              <td class="highlight-green" style="font-size: 1.1rem;">0 원 (첫달 무료 체험)</td>
+              <td>도입 예산 압도적 절감</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const kioskInput = document.getElementById('kiosk-count');
+    const kioskSlider = document.getElementById('kiosk-slider');
+    const hwTotalCost = document.getElementById('hw-total-cost');
+    const hwBaseCost = document.getElementById('hw-base-cost');
+    const hwInstallCost = document.getElementById('hw-install-cost');
+    const sdkTotalCost = document.getElementById('sdk-total-cost');
+    const sdkSubCost = document.getElementById('sdk-sub-cost');
+    const savingsBanner = document.getElementById('savings-banner');
+
+    function formatKrw(amount) {
+      return amount.toLocaleString('ko-KR') + ' 원';
+    }
+
+    function calculate() {
+      let count = parseInt(kioskInput.value) || 1;
+      if (count < 1) count = 1;
+
+      // HW replacement calculation
+      const baseHw = count * 4500000;
+      const installHw = Math.min(count * 500000, 10000000);
+      const totalHw = baseHw + installHw;
+
+      // SDK calculation
+      const subSdk = count * 29000;
+
+      // Savings
+      const netSavings = totalHw - subSdk;
+      const percent = ((netSavings / totalHw) * 100).toFixed(1);
+
+      // Update DOM
+      hwBaseCost.textContent = formatKrw(baseHw);
+      hwInstallCost.textContent = formatKrw(installHw);
+      hwTotalCost.textContent = formatKrw(totalHw);
+
+      sdkSubCost.textContent = formatKrw(subSdk) + ' /월';
+      sdkTotalCost.textContent = formatKrw(subSdk) + ' /월';
+
+      savingsBanner.textContent = `🎉 Vibe Kushk 도입 시 즉시 약 ${formatKrw(netSavings)} (${percent}%) 예산 절감!`;
+    }
+
+    kioskInput.addEventListener('input', (e) => {
+      kioskSlider.value = e.target.value;
+      calculate();
+    });
+
+    kioskSlider.addEventListener('input', (e) => {
+      kioskInput.value = e.target.value;
+      calculate();
+    });
+
+    // Initial calculation
+    calculate();
+  </script>
+</body>
+</html>
